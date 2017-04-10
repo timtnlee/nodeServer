@@ -26,6 +26,23 @@ router.post('/login',function(req,res){
 			}
 		})		
 	})
+//v3
+router.post('/personal',function(req,res){
+	console.log(req.body.name);
+	UsersData.findOne({Username:req.body.name},function(err,user){
+		if(user.UsericonSet==true)
+			res.send({icon:user.Usericon});
+		else
+			res.end();
+	})
+})
+router.post('/users',function(req,res){
+	UsersData.find({},function(err,user){
+			res.send(user);
+	})
+})
+
+//v2
 router.post('/nameCheck',function(req,res){
 	var name=req.body.name;
 	console.log('name check:'+name);
@@ -56,10 +73,13 @@ router.post('/register',function(req,res){
 
 router.post('/picture',function(req,res){
 	var username=req.body.username;
+	var ratio=req.body.ratio;
 	var data={};
+	console.log('update userIcon');
 	//var userData=new UsersData({Username:username,UsericonSet})
 	data.pic=req.body.result;
-	UsersData.update({Username:username},{ $set: {UsericonSet:true,Usericon:data.pic}}, function(err,num){
+	UsersData.update({Username:username},{ $set: {UsericonSet:true,Usericon:data.pic,UsericonRatio:ratio}}
+		, function(err,num){
 		(err)?res.send(err):res.send('更改成功');
 	});
 	
@@ -80,6 +100,9 @@ router.post('/allUsers',function(req,res){
 		res.end();
 	});
 			
+})
+router.post('/test',function(req,res){
+	res.send('success!!');
 })
 
 router.get('/display',function(req,res){

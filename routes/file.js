@@ -7,7 +7,8 @@ router.get('/',function(req,res){
   		res.end();
     	return console.log(err);
   		}
-  	res.send(data);
+  	var url=JSON.parse(data);
+  	res.send(url[2]);
 	});
 })
 
