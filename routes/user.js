@@ -6,6 +6,7 @@ var router=express.Router();
 var Users=mongoose.model('Users');
 var UsersData=mongoose.model('UsersData');
 var Articles=mongoose.model('Articles');
+//v3
 
 router.post('/login',function(req,res){
 	var name=req.body.name,
@@ -16,45 +17,16 @@ router.post('/login',function(req,res){
 				res.send({
 						welcome:'歡迎!'+name,
 						name:name,
-						verification:true});
+						verification:'yes'});
 			}
 			else{
 				console.log('user not found');
 				res.send({
 						welcome:'帳號或密碼錯誤',
-						verification:false});
+						verification:'no'});
 			}
 		})		
 	})
-//v3
-router.post('/personal',function(req,res){
-	console.log(req.body.name);
-	UsersData.findOne({Username:req.body.name},function(err,user){
-		if(user.UsericonSet==true)
-			res.send({icon:user.Usericon});
-		else
-			res.end();
-	})
-})
-router.post('/users',function(req,res){
-	UsersData.find({},function(err,user){
-			res.send(user);
-	})
-})
-
-//v2
-router.post('/nameCheck',function(req,res){
-	var name=req.body.name;
-	console.log('name check:'+name);
-	Users.findOne({Username:name},function(err,user){
-		if(user!=null){
-			res.send('no');
-		}
-		else
-			res.send('yes');
-	})
-})
-
 router.post('/register',function(req,res){
 	var name=req.body.name,
 		passwd=req.body.passwd;
@@ -70,15 +42,45 @@ router.post('/register',function(req,res){
 	})
 	
 })
+router.post('/personal',function(req,res){
+	console.log(req.body.name);
+	UsersData.findOne({Username:req.body.name},function(err,user){
+		if(user.Usericon)		
+			res.send({icon:user.Usericon});
+		else
+			res.end()
+	})
+})
+router.post('/users',function(req,res){
+	UsersData.find({},function(err,user){
+			res.send(user);
+	})
+})
+router.post('/nameCheck',function(req,res){
+	var name=req.body.name;
+	console.log('name check:'+name);
+	Users.findOne({Username:name},function(err,user){
+		if(user!=null){
+			res.send('no');
+		}
+		else
+			res.send('yes');
+	})
+})
+//v2
+
 
 router.post('/picture',function(req,res){
 	var username=req.body.username;
-	var ratio=req.body.ratio;
+	//var ratio=req.body.ratio;
 	var data={};
 	console.log('update userIcon');
 	//var userData=new UsersData({Username:username,UsericonSet})
 	data.pic=req.body.result;
-	UsersData.update({Username:username},{ $set: {UsericonSet:true,Usericon:data.pic,UsericonRatio:ratio}}
+	UsersData.update({Username:username},{ $set:
+		 {Usericon:data.pic
+		 	//,UsericonRatio:ratio
+		 }}
 		, function(err,num){
 		(err)?res.send(err):res.send('更改成功');
 	});
