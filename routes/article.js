@@ -13,6 +13,12 @@ router.post('/article',function(req,res){
 		res.send(article);
 	})
 })
+router.post('/single_article',function(req,res){
+	console.log(req.body.id);
+	Articles.find({_id:req.body.id},function(err,article){
+		res.send(article);
+	})
+})	
 router.post('/mapArticle',function(req,res){
 	MapArticles.aggregate({$project:{Username:1,Title:1,Date:1}},function(err,article){
 		res.send(article);
@@ -34,9 +40,16 @@ router.post('/addArticle',function(req,res){
 		Title:title,
 		Article:article,
 		Date:date});
-	newArticle.save(function(err){
+	newArticle.save(function(err,article){
 		(err)?res.send(err):res.send('發表成功');
+		var id=article._id;
+		updateArticle(id)
 	})
+	function updateArticle(id){
+		UsersData.update({Username:name},{$push:{Articles:id}},function(err){
+			console.log('關聯完成');
+		})
+	}
 })
 
 router.post('/',function(req,res){
@@ -96,8 +109,15 @@ router.post('/newMapArticle',function(req,res){
 		Places:places,
 		Articles:articles
 	})
-	newMapArticle.save(function(err){
+	newMapArticle.save(function(err,article){
 		console.log('MapArticle Saved!!');
+		var id=article._id;
+			UsersData.update({Username:name},
+			{ $push: {MapArticles: id}}
+				, function(err,num){
+				//console.log(num);
+				(err)?console.log(err):console.log('關聯成功');
+				});
 	})
 	console.log(places);
 	res.send('儲存成功');

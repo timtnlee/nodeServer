@@ -8,7 +8,11 @@ router.get('/',function(req,res){
     	return console.log(err);
   		}
   	var url=JSON.parse(data);
-  	res.send(url[2]);
+  	var list=''
+  	for(var i in url){
+  		list+='<a href="'+url[i]+'">LINK'+i+'</a><br>';
+  	}
+  	res.send(list);
 	});
 })
 
