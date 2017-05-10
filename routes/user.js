@@ -57,17 +57,34 @@ router.post('/register',function(req,res){
 router.post('/personal',function(req,res){
 	var userdata={};
 		userdata.name=req.body.name;
-	UsersData.findOne({Username:userdata.name},function(err,user){
-		userdata.icon='img/icon.png';
-		if(user.Usericon)userdata.icon=user.Usericon
-		Articles.find({Username:userdata.name},function(err,articles){
-			userdata.articles=articles;
-			Schedule.find({Username:userdata.name},function(err,datas){
-				userdata.schedules=datas;
-				res.send(userdata);	
-			})		
-		})			
-	})
+	var findData=function(){
+		return new Promise(function(resolve,reject){
+			UsersData.findOne({Username:userdata.name},function(err,user){
+				userdata.icon='img/icon.png';
+				if(user.Usericon)userdata.icon=user.Usericon
+				resolve()
+			})
+		})
+	},
+		findArticle=function(){
+			return new Promise(function(resolve,reject){
+				Articles.find({Username:userdata.name},function(err,articles){
+					userdata.articles=articles;
+					resolve()
+				})	
+			})
+		},
+		findSchedule=function(){
+			return new Promise(function(resolve,reject){
+				Schedule.find({Username:userdata.name},function(err,datas){
+					userdata.schedules=datas;
+					resolve()		
+				})		
+			})
+		}
+		Promise.all([findData(),findSchedule(),findArticle()]).then(()=>{
+			res.send(userdata);	
+		})	
 })
 router.post('/users',function(req,res){
 	UsersData.find({},function(err,user){
