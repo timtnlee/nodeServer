@@ -58,7 +58,8 @@ router.post('/personal',function(req,res){
 	var userdata={};
 		userdata.name=req.body.name;
 	UsersData.findOne({Username:userdata.name},function(err,user){
-		userdata.icon=user.Usericon;
+		userdata.icon='img/icon.png';
+		if(user.Usericon)userdata.icon=user.Usericon
 		Articles.find({Username:userdata.name},function(err,articles){
 			userdata.articles=articles;
 			Schedule.find({Username:userdata.name},function(err,datas){
@@ -83,6 +84,20 @@ router.post('/nameCheck',function(req,res){
 		else
 			res.send('yes');
 	})
+})
+router.post('/saveSchedule',function(req,res){
+	let schedule=req.body.schedule,
+		name=req.body.name,
+		title=req.body.title,
+		newSchedule=new Schedule({
+			Username:name,
+			Title:title,
+			Schedule:schedule
+		})
+		newSchedule.save(function(err,con) {
+			if(err)res.send('儲存失敗')
+			else res.send('儲存成功')
+		})	
 })
 router.post('/saveRouting',function(req,res){
 	var title,
