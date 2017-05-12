@@ -9,7 +9,8 @@ var Articles=mongoose.model('Articles');
 var MapArticles=mongoose.model('MapArticles');
 //v3
 router.post('/article',function(req,res){
-	Articles.find({},function(err,article){
+	Articles.aggregate({$project:{Username:1,Title:1,Date:1}},function(err,article){
+		console.log(article)
 		res.send(article);
 	})
 })

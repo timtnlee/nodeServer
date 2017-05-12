@@ -87,7 +87,7 @@ router.post('/personal',function(req,res){
 		})	
 })
 router.post('/users',function(req,res){
-	UsersData.find({},function(err,user){
+	UsersData.aggregate({$project:{Username:1,Usericon:1}},function(err,user){
 			res.send(user);
 	})
 })
