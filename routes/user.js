@@ -59,24 +59,32 @@ router.post('/personal',function(req,res){
 		userdata.name=req.body.name;
 	var findData=function(){
 		return new Promise(function(resolve,reject){
-			UsersData.findOne({Username:userdata.name},function(err,user){
+			UsersData.findOne({Username:userdata.name},'Usericon',function(err,user){
 				userdata.icon='img/icon.png';
-				if(user.Usericon)userdata.icon=user.Usericon
-				resolve()
+				if(user.Usericon)
+					userdata.icon=user.Usericon
+				if(err)
+					 reject()
+				resolve()		
 			})
 		})
 	},
 		findArticle=function(){
 			return new Promise(function(resolve,reject){
-				Articles.find({Username:userdata.name},function(err,articles){
+				Articles.find({Username:userdata.name},'Username Title Date _id',function(err,articles){
+					if(err)
+						reject()
 					userdata.articles=articles;
 					resolve()
+
 				})	
 			})
 		},
 		findSchedule=function(){
 			return new Promise(function(resolve,reject){
 				Schedule.find({Username:userdata.name},function(err,datas){
+					if(err)
+						reject()
 					userdata.schedules=datas;
 					resolve()		
 				})		
