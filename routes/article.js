@@ -9,24 +9,33 @@ var Articles=mongoose.model('Articles');
 var MapArticles=mongoose.model('MapArticles');
 //v3
 router.post('/article',function(req,res){
-	Articles.aggregate({$project:{Username:1,Title:1,Date:1}},function(err,article){
+	Articles.aggregate({$project:{Username:1,Title:1,Date:1,Popular:1}},function(err,article){
 		res.send(article);
 	})
 })
 router.post('/single_article',function(req,res){
-	console.log(req.body.id);
+	//console.log(req.body.id);
 	Articles.find({_id:req.body.id},function(err,article){
-		res.send(article);
+		var pop=article[0].Popular+1;
+		
+		Articles.update({_id:req.body.id},{$set:{Popular:pop}},function(err){
+			console.log('done')	
+			res.send(article);		
+		})				
 	})
 })	
 router.post('/mapArticle',function(req,res){
-	MapArticles.aggregate({$project:{Username:1,Title:1,Date:1}},function(err,article){
+	MapArticles.aggregate({$project:{Username:1,Title:1,Date:1,Popular:1}},function(err,article){
 		res.send(article);
 	})
 })
 router.post('/single_mapArticle',function(req,res){
-	MapArticles.findOne({Username:req.body.name,Date:req.body.date},function(err,article){
-		res.send(article);
+	MapArticles.findOne({_id:req.body.id},function(err,article){
+		var pop=article.Popular+1;
+		MapArticles.update({_id:req.body.id},{$set:{Popular:pop}},function(err){
+			console.log('done')	
+			res.send(article);		
+		})		
 	})
 })
 //v2
@@ -39,7 +48,9 @@ router.post('/addArticle',function(req,res){
 		Username:name,
 		Title:title,
 		Article:article,
-		Date:date});
+		Date:date,
+		Popular:0
+	});
 	newArticle.save(function(err,article){
 		(err)?res.send(err):res.send('發表成功');
 		var id=article._id;
