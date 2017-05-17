@@ -5,6 +5,7 @@ var router=express.Router();
 
 var Users=mongoose.model('Users');
 var UsersData=mongoose.model('UsersData');
+var MapArticles=mongoose.model('MapArticles');
 var Articles=mongoose.model('Articles');
 var Schedule=mongoose.model('Schedule');
 //v3
@@ -80,6 +81,17 @@ router.post('/personal',function(req,res){
 				})	
 			})
 		},
+		findMapArticle=function(){
+			return new Promise(function(resolve,reject){
+				MapArticles.find({Username:userdata.name},'Username Title Date _id',function(err,articles){
+					if(err)
+						reject()
+					userdata.mapArticles=articles;
+					resolve()
+
+				})	
+			})
+		},
 		findSchedule=function(){
 			return new Promise(function(resolve,reject){
 				Schedule.find({Username:userdata.name},function(err,datas){
@@ -90,7 +102,7 @@ router.post('/personal',function(req,res){
 				})		
 			})
 		}
-		Promise.all([findData(),findSchedule(),findArticle()]).then(()=>{
+		Promise.all([findData(),findSchedule(),findArticle(),findMapArticle()]).then(()=>{
 			res.send(userdata);	
 		})	
 })
