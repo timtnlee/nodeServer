@@ -98,7 +98,7 @@ router.post('/',function(req,res){
 router.post('/newMapArticle',function(req,res){
 	console.log('newMapArticle...');
 	var places=[],
-	articles=[];
+		articles=[];
 
 	for(var length in req.body);
 		console.log(length);
@@ -118,7 +118,8 @@ router.post('/newMapArticle',function(req,res){
 		Title:title,
 		Date:date,
 		Places:places,
-		Articles:articles
+		Articles:articles,
+		Popular:0
 	})
 	newMapArticle.save(function(err,article){
 		console.log('MapArticle Saved!!');
