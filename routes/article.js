@@ -23,7 +23,30 @@ router.post('/single_article',function(req,res){
 			res.send(article);		
 		})				
 	})
-})	
+})
+router.post('/message',function(req,res){
+	var data={
+		message:req.body.message,
+		name:req.body.name,
+		date:req.body.date
+	}
+	Articles.update({_id:req.body.id},{$push:{Message:data}},function(err,art){
+		res.end()
+	})
+	
+})
+
+router.post('/message_map',function(req,res){
+	var data={
+		message:req.body.message,
+		name:req.body.name,
+		date:req.body.date
+	}
+	MapArticles.update({_id:req.body.id},{$push:{Message:data}},function(err,art){
+		res.end()
+	})
+	
+})		
 router.post('/mapArticle',function(req,res){
 	MapArticles.aggregate({$project:{Username:1,Title:1,Date:1,Popular:1}},function(err,article){
 		res.send(article);
