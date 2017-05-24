@@ -62,10 +62,11 @@ router.post('/personal',function(req,res){
 		return new Promise(function(resolve,reject){
 			UsersData.findOne({Username:userdata.name},'Usericon',function(err,user){
 				userdata.icon='img/icon.png';
-				if(user.Usericon)
-					userdata.icon=user.Usericon
-				if(err)
+				if(user==null||err)
 					 reject()
+				if(user!=null&&user.Usericon)
+					userdata.icon=user.Usericon
+				
 				resolve()		
 			})
 		})
